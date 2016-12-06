@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 CURRENT_DIR=$(pwd)
-curl -s https://github.com/raw/PredixDev/predix-machine-templates/master/scripts/buildAndDeploy.sh > scripts/buildAndDeploy.sh
+curl -s https://raw.githubusercontent.com/PredixDev/predix-machine-templates/master/scripts/buildAndDeploy.sh > scripts/buildAndDeploy.sh
 chmod 775 scripts/buildAndDeploy.sh
 ./scripts/buildAndDeploy.sh $*
 
