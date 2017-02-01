@@ -11,6 +11,7 @@
 package com.ge.predix.solsvc.simulator.types;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.ge.dspmicro.machinegateway.api.adapter.IDataSubscriptionListener;
@@ -21,6 +22,7 @@ import com.ge.dspmicro.machinegateway.types.PDataValue;
  * 
  * @author Predix Machine Sample
  */
+@SuppressWarnings("deprecation")
 public class SampleSubscriptionListener
         implements IDataSubscriptionListener
 {
@@ -61,4 +63,10 @@ public class SampleSubscriptionListener
     {
         // Auto-generated method stub
     }
+
+	@Override
+	public void onDataUpdate(ISubscriptionMachineAdapter arg0, Map<String, String> arg1, List<PDataValue> arg2) {
+		// TODO Auto-generated method stub
+		
+	}
 }

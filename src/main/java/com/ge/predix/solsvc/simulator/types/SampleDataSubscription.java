@@ -25,6 +25,7 @@ import com.ge.dspmicro.machinegateway.types.PDataValue;
  * 
  * @author Predix Machine Sample
  */
+@SuppressWarnings("deprecation")
 public class SampleDataSubscription implements Runnable, IDataSubscription {
 	private UUID uuid;
 	private String name;
@@ -59,7 +60,6 @@ public class SampleDataSubscription implements Runnable, IDataSubscription {
 		// Generate unique id.
 		this.uuid = UUID.randomUUID();
 		this.name = subName;
-
 		this.threadRunning.set(false);
 	}
 
@@ -122,9 +122,9 @@ public class SampleDataSubscription implements Runnable, IDataSubscription {
 	public void run() {
 		if (!this.threadRunning.get() && this.adapter.getNodes().size() > 0) {
 			this.threadRunning.set(true);
-
 			while (this.threadRunning.get()) {
 				// Generate random data for each node and push data update.
+				
 				List<PDataValue> data = new ArrayList<PDataValue>();
 
 				for (PDataNode node : this.adapter.getNodes()) {
@@ -134,13 +134,13 @@ public class SampleDataSubscription implements Runnable, IDataSubscription {
 				for (IDataSubscriptionListener listener : this.listeners) {
 					listener.onDataUpdate(this.adapter, data);
 				}
-
+				
 				try {
 					// Wait for an updateInterval period before pushing next
 					// data update.
 					Thread.sleep(this.updateInterval);
 				} catch (InterruptedException e) {
-					// ignore
+					e.printStackTrace();
 				}
 			}
 		}

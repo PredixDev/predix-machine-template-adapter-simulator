@@ -2,9 +2,11 @@
 (org.osgi.framework.PackagePermission "*" "import")
 
 # Registered services
+(org.osgi.framework.ServicePermission "com.ge.dspmicro.machinegateway.api.adapter.ISubscriptionMachineAdapter" "register")
+(org.osgi.framework.ServicePermission "com.ge.dspmicro.machinegateway.api.adapter.IMachineAdapter" "register")
+(org.osgi.framework.ServicePermission "com.ge.dspmicro.hoover.api.processor.IProcessor" "register")
 
 # Get other services.
-(org.osgi.framework.ServicePermission "com.ge.dspmicro.machinegateway.api.adapter.ISubscriptionMachineAdapter" "get")
 (org.osgi.framework.ServicePermission "com.ge.dspmicro.security.admin.api.ISecurityUtils" "get")
 
 # Bundle Wiring for pax logging.

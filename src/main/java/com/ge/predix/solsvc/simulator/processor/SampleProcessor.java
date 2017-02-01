@@ -11,6 +11,7 @@
 package com.ge.predix.solsvc.simulator.processor;
 
 import java.util.List;
+import java.util.Map;
 
 import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
@@ -20,15 +21,20 @@ import com.ge.dspmicro.hoover.api.processor.IProcessor;
 import com.ge.dspmicro.hoover.api.processor.ProcessorException;
 import com.ge.dspmicro.hoover.api.spillway.ITransferData;
 import com.ge.dspmicro.machinegateway.types.ITransferable;
+import com.ge.predixmachine.datamodel.datacomm.EdgeDataList;
 
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.Deactivate;
 
+
 /**
  * This class provides a Processor implementation which will process the data as per configuration on the spillway.
  */
-@Component(name = SampleProcessor.SERVICE_PID)
+@Component(name = SampleProcessor.SERVICE_PID, provide =
+{
+    IProcessor.class
+})
 public class SampleProcessor
         implements IProcessor
 {
@@ -68,12 +74,30 @@ public class SampleProcessor
         }
     }
  
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public void processValues(String processType, List<ITransferable> values, ITransferData transferData)
             throws ProcessorException
     {
     	_logger.info("VALUES :" +values.toString()); //$NON-NLS-1$
     	transferData.transferData(values);
     }
+
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public void processValues(String processType, Map<String, String> map, List<ITransferable> values, ITransferData transferData)
+			throws ProcessorException {
+		_logger.info("VALUES :" +values.toString()); //$NON-NLS-1$
+    	transferData.transferData(values);
+	}
+
+
+	@Override
+	public void processValues(String processType, Map<String, String> map, EdgeDataList values, ITransferData transferData)
+			throws ProcessorException {
+		// TODO Auto-generated method stub
+		transferData.transferData(values, map);
+	}
    
 }
