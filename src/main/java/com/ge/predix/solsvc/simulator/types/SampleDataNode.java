@@ -27,7 +27,7 @@ public class SampleDataNode extends PDataNode
 
 		
     private JsonDataNode node;
-    
+    private String expression;
 	/**
 	 * @param machineAdapterId -
 	 * @param node -
@@ -35,6 +35,7 @@ public class SampleDataNode extends PDataNode
 	public SampleDataNode(UUID machineAdapterId, JsonDataNode node) {
 		super(machineAdapterId, node.getNodeName());
 		this.setNode(node);
+		this.setExpression(node.getExpression());
 	}
 
     /**
@@ -66,5 +67,13 @@ public class SampleDataNode extends PDataNode
 	 */
 	public void setNode(JsonDataNode node) {
 		this.node = node;
+	}
+
+	public String getExpression() {
+		return expression;
+	}
+
+	public void setExpression(String expression) {
+		this.expression = expression;
 	}
 }

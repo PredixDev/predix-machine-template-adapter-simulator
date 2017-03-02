@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ge.predix.solsvc</groupId>
 	<artifactId>predix-machine-template-adapter-simulator</artifactId>
-	<version>2.1.5</version>
+	<version>2.1.14</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -262,6 +262,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>com.ge.dspmicro</groupId>
+            <artifactId>databus-api</artifactId>
+            <version>${dspmicro.version}</version>
+        </dependency>
+        <dependency>
 		    <groupId>com.ge.predixmachine</groupId>
 		    <artifactId>protobuf-models</artifactId>
 		    <version>${dspmicro.version}</version>
@@ -270,6 +275,7 @@
             <groupId>com.google.protobuf</groupId>
             <artifactId>protobuf-java</artifactId>
             <version>${com.google.protobuf.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.protobuf</groupId>
@@ -336,6 +342,7 @@
 							org.codehaus.jackson;version=${import.org.codehaus.jackson},
 							org.codehaus.jackson.map;version=${import.org.codehaus.jackson.map},
 							org.codehaus.jackson.type;version=${import.org.codehaus.jackson.type},
+							com.google.protobuf;version=${import.com.google.protobuf},
 							com.ge.dspmicro.hoover.api.spillway;version=${import.com.ge.dspmicro.hoover.api},
                             com.ge.dspmicro.hoover.api.processor;version=${import.com.ge.dspmicro.hoover.api},
                             com.ge.dspmicro.security.admin.api;version=${import.com.ge.dspmicro.security.admin.api},

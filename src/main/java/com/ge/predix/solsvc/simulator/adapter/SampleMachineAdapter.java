@@ -20,7 +20,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +53,7 @@ import com.ge.dspmicro.machinegateway.api.adapter.MachineAdapterState;
 import com.ge.dspmicro.machinegateway.types.PDataNode;
 import com.ge.dspmicro.machinegateway.types.PDataValue;
 import com.ge.dspmicro.machinegateway.types.PEnvelope;
+import com.ge.predix.solsvc.simulator.api.ISampleAdapterConfig;
 import com.ge.predix.solsvc.simulator.config.JsonDataNode;
 import com.ge.predix.solsvc.simulator.rest.IHttpClientSampleRestServer;
 import com.ge.predix.solsvc.simulator.types.DataSimulatorResponse;
@@ -63,11 +63,9 @@ import com.ge.predix.solsvc.simulator.types.SampleSubscriptionListener;
 
 import aQute.bnd.annotation.component.Activate;
 import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.ConfigurationPolicy;
 import aQute.bnd.annotation.component.Deactivate;
 import aQute.bnd.annotation.component.Modified;
-import aQute.bnd.annotation.metatype.Configurable;
-import aQute.bnd.annotation.metatype.Meta;
+import aQute.bnd.annotation.component.Reference;
 import parsii.eval.Expression;
 import parsii.eval.Parser;
 import parsii.tokenizer.ParseException;
@@ -80,44 +78,15 @@ import parsii.tokenizer.ParseException;
 @Component(name = SampleMachineAdapter.SERVICE_PID, provide =
 {
 		ISubscriptionMachineAdapter.class, IMachineAdapter.class
-}, designate = SampleMachineAdapter.Config.class, configurationPolicy = ConfigurationPolicy.require)
+})
 @Path(IHttpClientSampleRestServer.PATH)
 public class SampleMachineAdapter
 implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 {
-	// Meta mapping for configuration properties
-	@Meta.OCD(name="%component.name", factory=true, localization="OSGI-INF/l10n/bundle")
-	interface Config {
-		@Meta.AD(name = "%updateInterval.name", description = "%updateInterval.description", id = UPDATE_INTERVAL, required = false, deflt = "")
-		String updateInterval();
-
-		@Meta.AD(name = "%nodeConfigFile.name", description = "%nodeConfigFile.description", id = NODE_NAMES, required = false, deflt = "")
-		String nodeConfigFile();
-
-		@Meta.AD(name = "%adapterName.name", description = "%adapterName.description", id = ADAPTER_NAME, required = false, deflt = "")
-		String adapterName();
-
-		@Meta.AD(name = "%adapterDescription.name", description = "%adapterDescription.description", id = ADAPTER_DESCRIPTION, required = false, deflt = "")
-		String adapterDescription();
-
-		@Meta.AD(id = DATA_SUBSCRIPTIONS, name = "%dataSubscriptions.name", description = "%dataSubscriptions.description", required = true, deflt = "")
-		String dataSubscriptions();
-	}
+	
 
 	/** Service PID for Sample Machine Adapter */
-	public static final String SERVICE_PID = "com.ge.predix.solsvc.workshop.adapter"; //$NON-NLS-1$
-	/** Key for Node Configuration File */
-	public static final String NODE_CONFI_FILE = SERVICE_PID + "configFile"; //$NON-NLS-1$
-	/** Key for Update Interval */
-	public static final String UPDATE_INTERVAL = SERVICE_PID + ".UpdateInterval"; //$NON-NLS-1$
-	/** Key for number of nodes */
-	public static final String NODE_NAMES = SERVICE_PID + ".NodeConfigFile"; //$NON-NLS-1$
-	/** key for machine adapter name */
-	public static final String ADAPTER_NAME = SERVICE_PID + ".Name"; //$NON-NLS-1$
-	/** Key for machine adapter description */
-	public static final String ADAPTER_DESCRIPTION = SERVICE_PID + ".Description"; //$NON-NLS-1$
-	/** data subscriptions */
-	public static final String DATA_SUBSCRIPTIONS = SERVICE_PID + ".DataSubscriptions"; //$NON-NLS-1$
+	public static final String SERVICE_PID = "com.ge.predix.solsvc.simulator.adapter"; //$NON-NLS-1$
 	/**
 	 * The regular expression used to split property values into String array.
 	 */
@@ -128,15 +97,11 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	// (runtime Statistics)
 	private static final Logger _logger = LoggerFactory.getLogger(SampleMachineAdapter.class);
 	private UUID uuid = UUID.randomUUID();
-	private Dictionary<String, Object> props;
 	private MachineAdapterInfo adapterInfo;
 	private MachineAdapterState adapterState;
 	private Map<UUID, SampleDataNode> dataNodes = new HashMap<UUID, SampleDataNode>();
 
-	private int updateInterval;
-
-	private Config config;
-
+	private ISampleAdapterConfig config;
 	/**
 	 * Data cache for holding latest data updates
 	 */
@@ -167,26 +132,20 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 			_logger.debug("Starting sample " + ctx.getBundleContext().getBundle().getSymbolicName()); //$NON-NLS-1$
 		}
 
-		// Get all properties and create nodes.
-		this.props = ctx.getProperties();
-
-		this.config = Configurable.createConfigurable(Config.class, ctx.getProperties());
-
-		this.updateInterval = Integer.parseInt(this.config.updateInterval());
 		ObjectMapper mapper = new ObjectMapper();
-		File configFile = new File(MACHINE_HOME + File.separator + this.config.nodeConfigFile());
+		File configFile = new File(MACHINE_HOME + File.separator + this.config.getNodeConfigFile());
 		this.configNodes = mapper.readValue(configFile, new TypeReference<List<JsonDataNode>>() {
 			//
 		});
 		createNodes(this.configNodes);
 
-		this.adapterInfo = new MachineAdapterInfo(this.config.adapterName(), SampleMachineAdapter.SERVICE_PID,
-				this.config.adapterDescription(), ctx.getBundleContext().getBundle().getVersion().toString());
+		this.adapterInfo = new MachineAdapterInfo(this.config.getAdapterName(), SampleMachineAdapter.SERVICE_PID,
+				this.config.getAdapterDescription(), ctx.getBundleContext().getBundle().getVersion().toString());
 
-		List<String> subs = Arrays.asList(parseDataSubscriptions(DATA_SUBSCRIPTIONS));
+		List<String> subs = Arrays.asList(parseDataSubscriptions());
 		// Start data subscription and sign up for data updates.
 		for (String sub : subs) {
-			SampleDataSubscription dataSubscription = new SampleDataSubscription(this, sub, this.updateInterval,
+			SampleDataSubscription dataSubscription = new SampleDataSubscription(this, sub, this.config.getUpdateInterval(),
 					new ArrayList<PDataNode>(this.dataNodes.values()));
 			this.dataSubscriptions.put(dataSubscription.getId(), dataSubscription);
 			// Using internal listener, but these subscriptions can be used with
@@ -196,10 +155,10 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		}
 	}
 
-	private String[] parseDataSubscriptions(String key) {
+	private String[] parseDataSubscriptions() {
 
-		Object objectValue = this.props.get(key);
-		_logger.info("Key : " + key + " : " + objectValue); //$NON-NLS-1$ //$NON-NLS-2$
+		Object objectValue = this.config.getDataSubscriptions();
+		_logger.info("Data Subscriptions :  " + objectValue); //$NON-NLS-1$ //$NON-NLS-2$
 		if (objectValue == null) {
 			invalidDataSubscription();
 		} else {
@@ -258,8 +217,6 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	@Modified
 	public synchronized void modified(ComponentContext ctx) {
 		// Handle run-time changes to properties.
-
-		this.props = ctx.getProperties();
 	}
 
 	/*
@@ -306,7 +263,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		PEnvelope envelope = new PEnvelope(fvalue);
 		pDataValue = new PDataValue(node.getNodeId(), envelope);
 		pDataValue.setNodeName(node.getName());
-		pDataValue.setAddress(node.getAddress());
+		//pDataValue.setAddress(node.getAddress());
 		// Do not return null.
 		return pDataValue;
 	}
@@ -521,9 +478,9 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		}
 
 		try {
-			copyFile(MACHINE_HOME + File.separator + this.config.nodeConfigFile(),
-					MACHINE_HOME + File.separator + this.config.nodeConfigFile() + "_bck"); //$NON-NLS-1$
-			File f = new File(MACHINE_HOME + File.separator + this.config.nodeConfigFile());
+			copyFile(MACHINE_HOME + File.separator + this.config.getNodeConfigFile(),
+					MACHINE_HOME + File.separator + this.config.getNodeConfigFile() + "_bck"); //$NON-NLS-1$
+			File f = new File(MACHINE_HOME + File.separator + this.config.getNodeConfigFile());
 			if (newDataNodes != null) {
 				this.setConfigNodes(newDataNodes);
 			}
@@ -614,5 +571,14 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	public void removeEdgeDataSubscription(UUID arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public ISampleAdapterConfig getConfig() {
+		return config;
+	}
+
+	@Reference
+	public void setConfig(ISampleAdapterConfig config) {
+		this.config = config;
 	}
 }

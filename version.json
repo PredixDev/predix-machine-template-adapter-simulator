@@ -1,9 +1,9 @@
 {
   "name": "Predix Machine Subscription Machine Adapter - Simulator",
-  "version": "2.1.5",
+  "version": "2.1.14",
   "private": true,
   "dependencies": {
-    "predix-scripts": "https://github.com/PredixDev/predix-scripts.git#1.0.4"
+    "predix-scripts": "https://github.com/PredixDev/predix-scripts.git#1.0.15"
   },
   "author": "rishabhtulsian,swapnavad,susheelchoudhari"
 }
