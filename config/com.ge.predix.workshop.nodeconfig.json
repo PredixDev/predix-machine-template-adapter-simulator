@@ -5,7 +5,8 @@
     "nodeName": "Compressor-2015:CompressionRatio",
     "dataType": "DOUBLE",
     "upperThreshold": 3.0,
-    "lowerThreshold": 2.5
+    "lowerThreshold": 2.5,
+    "expression": " #NODE_VALUE# = 0 "
   },
   {
     "simulateAlarm": false,
@@ -13,7 +14,8 @@
     "nodeName": "Compressor-2015:DischargePressure",
     "dataType": "DOUBLE",
     "upperThreshold": 23.0,
-    "lowerThreshold": 0.0
+    "lowerThreshold": 0.0,
+    "expression": " #NODE_VALUE# = 0 "
   },
   {
     "simulateAlarm": false,
@@ -21,7 +23,8 @@
     "nodeName": "Compressor-2015:SuctionPressure",
     "dataType": "DOUBLE",
     "upperThreshold": 0.5,
-    "lowerThreshold": 0.0
+    "lowerThreshold": 0.0,
+    "expression": " #NODE_VALUE# = 0 "
   },
   {
     "simulateAlarm": false,
@@ -29,7 +32,8 @@
     "nodeName": "Compressor-2015:MaximumPressure",
     "dataType": "DOUBLE",
     "upperThreshold": 20.0,
-    "lowerThreshold": 28.0
+    "lowerThreshold": 28.0,
+    "expression": " #NODE_VALUE# = 0 "
   },
   {
     "simulateAlarm": false,
@@ -37,7 +41,8 @@
     "nodeName": "Compressor-2015:MinimumPressure",
     "dataType": "DOUBLE",
     "upperThreshold": 0.0,
-    "lowerThreshold": 0.0
+    "lowerThreshold": 0.0,
+    "expression": " #NODE_VALUE# = 0 "
   },
   {
     "simulateAlarm": false,
@@ -45,7 +50,8 @@
     "nodeName": "Compressor-2015:Temperature",
     "dataType": "DOUBLE",
     "upperThreshold": 80,
-    "lowerThreshold": 50
+    "lowerThreshold": 50,
+    "expression": " #NODE_VALUE# = 0 "
   },
   {
     "simulateAlarm": false,
@@ -53,6 +59,7 @@
     "nodeName": "Compressor-2015:Velocity",
     "dataType": "DOUBLE",
     "upperThreshold": 0.1,
-    "lowerThreshold": 0.0
+    "lowerThreshold": 0.0,
+    "expression": " #NODE_VALUE# = 0 "
   }
 ]
