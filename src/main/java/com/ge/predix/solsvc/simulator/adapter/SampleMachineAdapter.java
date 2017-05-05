@@ -38,9 +38,15 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.ge.dspmicro.hoover.api.spillway.ISpillway;
 import com.ge.dspmicro.machinegateway.api.adapter.IDataSubscription;
 import com.ge.dspmicro.machinegateway.api.adapter.IDataSubscriptionListener;
 import com.ge.dspmicro.machinegateway.api.adapter.IEdgeDataSubscription;
@@ -61,11 +67,6 @@ import com.ge.predix.solsvc.simulator.types.SampleDataNode;
 import com.ge.predix.solsvc.simulator.types.SampleDataSubscription;
 import com.ge.predix.solsvc.simulator.types.SampleSubscriptionListener;
 
-import aQute.bnd.annotation.component.Activate;
-import aQute.bnd.annotation.component.Component;
-import aQute.bnd.annotation.component.Deactivate;
-import aQute.bnd.annotation.component.Modified;
-import aQute.bnd.annotation.component.Reference;
 import parsii.eval.Expression;
 import parsii.eval.Parser;
 import parsii.tokenizer.ParseException;
@@ -75,7 +76,7 @@ import parsii.tokenizer.ParseException;
  * @author Predix Machine Sample
  */
 @SuppressWarnings({ "javadoc", "deprecation" })
-@Component(name = SampleMachineAdapter.SERVICE_PID, provide =
+@Component(name = SampleMachineAdapter.SERVICE_PID, service =
 {
 		ISubscriptionMachineAdapter.class, IMachineAdapter.class
 })
@@ -113,6 +114,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 
 	private DecimalFormat decimalFormat = new DecimalFormat("####.##"); //$NON-NLS-1$
 
+	private ISpillway spillway;
 	/*
 	 * ############################################### # OSGi service lifecycle
 	 * management # ###############################################
@@ -128,10 +130,8 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	 */
 	@Activate
 	public void activate(ComponentContext ctx) throws IOException {
-		if (_logger.isDebugEnabled()) {
-			_logger.debug("Starting sample " + ctx.getBundleContext().getBundle().getSymbolicName()); //$NON-NLS-1$
-		}
-
+		_logger.info("Starting sample " + ctx.getBundleContext().getBundle().getSymbolicName()); //$NON-NLS-1$
+		
 		ObjectMapper mapper = new ObjectMapper();
 		File configFile = new File(MACHINE_HOME + File.separator + this.config.getNodeConfigFile());
 		this.configNodes = mapper.readValue(configFile, new TypeReference<List<JsonDataNode>>() {
@@ -146,7 +146,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		// Start data subscription and sign up for data updates.
 		for (String sub : subs) {
 			SampleDataSubscription dataSubscription = new SampleDataSubscription(this, sub, this.config.getUpdateInterval(),
-					new ArrayList<PDataNode>(this.dataNodes.values()));
+					new ArrayList<PDataNode>(this.dataNodes.values()),spillway);
 			this.dataSubscriptions.put(dataSubscription.getId(), dataSubscription);
 			// Using internal listener, but these subscriptions can be used with
 			// Spillway listener also
@@ -318,7 +318,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 
 			// Create new subscription.
 			SampleDataSubscription newSubscription = new SampleDataSubscription(this, subscription.getName(),
-					subscription.getUpdateInterval(), subscriptionNodes);
+					subscription.getUpdateInterval(), subscriptionNodes,spillway);
 			this.dataSubscriptions.put(newSubscription.getId(), newSubscription);
 			new Thread(newSubscription).start();
 			return newSubscription.getId();
@@ -580,5 +580,10 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	@Reference
 	public void setConfig(ISampleAdapterConfig config) {
 		this.config = config;
+	}
+
+	@Reference
+	public void setSpillway(ISpillway spillway) {
+		this.spillway = spillway;
 	}
 }

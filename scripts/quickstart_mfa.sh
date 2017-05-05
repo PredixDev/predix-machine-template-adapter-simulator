@@ -124,9 +124,42 @@ fi
 #Replace the :TAE tag with instance prepender
 configFile="$PREDIX_MACHINE_HOME/configuration/machine/com.ge.predix.workshop.nodeconfig.json"
 __find_and_replace ":TAE" ":$(echo $INSTANCE_PREPENDER | tr 'a-z' 'A-Z')" "$configFile" "$quickstartLogDir"
-cd predix-scripts/bash
-./scripts/buildMavenBundle.sh "$PREDIX_MACHINE_HOME"
-cd ../..
+
+if [[ $RUN_COMPILE_REPO -eq 1 ]]; then
+  mvn -q clean install -U -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -f pom.xml -s $MAVEN_SETTINGS_FILE
+else
+  mvn clean dependency:copy -Dmdep.useBaseVersion=true -s $MAVEN_SETTINGS_FILE
+fi
+
+mvn help:active-profiles
+
+PROJECT_ARTIFACT_ID=$(mvn org.apache.maven.plugins:maven-help-plugin:2.2:evaluate -Dexpression=project.artifactId | grep -e '^[^\[]')
+PROJECT_VERSION=$(mvn org.apache.maven.plugins:maven-help-plugin:2.2:evaluate -Dexpression=project.version | grep -e '^[^\[]')
+MACHINE_BUNDLE="$PROJECT_ARTIFACT_ID-$PROJECT_VERSION.jar"
+echo "MACHINE_BUNDLE_JAR : $MACHINE_BUNDLE"
+
+#SOLUTION_INI="sed -i 's#{MACHINE_BUNDLE_JAR}#${MACHINE_BUNDLE}#' config/solution.ini > $PREDIX_MACHINE_HOME/machine/bin/vms/solution.ini"
+#echo "SOLUTION_INI : $SOLUTION_INI"
+#sed "s\#MACHINE_BUNDLE_JAR\#${MACHINE_BUNDLE}\#" config/solution.ini > "$PREDIX_MACHINE_HOME/machine/bin/vms/solution.ini"
+#__echo_run "sed \"s#MACHINE_BUNDLE_JAR#$MACHINE_BUNDLE#\" \"config/solution.ini\" > $PREDIX_MACHINE_HOME/machine/bin/vms/solution.ini"
+__find_and_replace_string "{MACHINE_BUNDLE_VERSION}" "$PROJECT_VERSION" "config/solution.ini" "$buildBasicAppLogDir" "$PREDIX_MACHINE_HOME/machine/bin/vms/solution.ini"
+
+#sed 's#{MACHINE_BUNDLE_JAR}#${MACHINE_BUNDLE}#' config/solution.ini > "$PREDIX_MACHINE_HOME/machine/bin/vms/solution.ini"
+#sed -i -e "s#<name>{MACHINE_BUNDLE_JAR}</name>#<name>$MACHINE_BUNDLE</name>#" config/solution.ini
+#__echo_run cp config/solution.ini $PREDIX_MACHINE_HOME/machine/bin/vms/solution.ini
+__echo_run cp target/$MACHINE_BUNDLE "$PREDIX_MACHINE_HOME/machine/bundles"
+
+echo "#################### Build and setup the adatper end ####################"
+
+
+cd $PREDIX_MACHINE_HOME
+echo "Creating Configuration and Software package"
+pwd
+rm -rf $CURRENT_DIR/PredixEdgeSoftware.zip
+rm -rf $CURRENT_DIR/PredixEdgeConfiguration.zip
+zip -r $CURRENT_DIR/PredixEdgeConfiguration.zip configuration
+zip -r $CURRENT_DIR/PredixEdgeSoftware.zip machine
+cd $CURRENT_DIR
 
 PREDIX_SERVICES_SUMMARY_FILE="$CURRENT_DIR/predix-scripts/bash/log/predix-services-summary.txt"
 

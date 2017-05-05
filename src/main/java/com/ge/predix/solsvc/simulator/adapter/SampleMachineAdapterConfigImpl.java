@@ -1,8 +1,13 @@
 package com.ge.predix.solsvc.simulator.adapter;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.osgi.service.component.ComponentContext;
 
 import com.ge.predix.solsvc.simulator.api.ISampleAdapterConfig;
+import com.ge.predix.solsvc.simulator.types.SampleDataNode;
 
 import aQute.bnd.annotation.component.Component;
 import aQute.bnd.annotation.component.ConfigurationPolicy;
@@ -22,6 +27,8 @@ public class SampleMachineAdapterConfigImpl implements ISampleAdapterConfig {
 	private String adapterName;
 	private String adapterDescription;
 	private String[] dataSubscriptions;
+	
+	private Map<UUID, SampleDataNode> dataNodes = new HashMap<UUID, SampleDataNode>();
 	
 	/** Service PID for Sample Machine Adapter */
 	public static final String SERVICE_PID = "com.ge.predix.solsvc.simulator.config"; //$NON-NLS-1$
@@ -75,6 +82,14 @@ public class SampleMachineAdapterConfigImpl implements ISampleAdapterConfig {
 		this.dataSubscriptions = dataSubscriptions;
 	}
 
+	@Override
+	public Map<UUID, com.ge.predix.solsvc.simulator.types.SampleDataNode> getDataNodes() {
+		return dataNodes;
+	}
+
+	public void setDataNodes(Map<UUID, SampleDataNode> dataNodes) {
+		this.dataNodes = dataNodes;
+	}
 	// Meta mapping for configuration properties
 	@Meta.OCD(name="%component.name", factory=true, localization="OSGI-INF/l10n/bundle")
 	interface Config {

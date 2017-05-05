@@ -1,5 +1,11 @@
 package com.ge.predix.solsvc.simulator.api;
 
+import java.util.Map;
+import java.util.UUID;
+
+import com.ge.predix.solsvc.simulator.types.SampleDataNode;
+
+
 public interface ISampleAdapterConfig {
 	public static final String PROPKEY_UPDATE_INTERVAL = "com.ge.predix.solsvc.workshop.adapter.UpdateInterval";
 	public static final String PROPKEY_NODES_CONFIG_FILE = "com.ge.predix.solsvc.workshop.adapter.NodeConfigFile";
@@ -12,4 +18,5 @@ public interface ISampleAdapterConfig {
 	String getAdapterName();
 	String getAdapterDescription();
 	String[] getDataSubscriptions();
+	public Map<UUID, SampleDataNode> getDataNodes();
 }
