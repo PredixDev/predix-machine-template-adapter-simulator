@@ -4,6 +4,7 @@
 <a href="http://predixdev.github.io/predix-machine-template-adapter-simulator" target="_blank">
 	<img height="50px" width="100px" src="images/pages.jpg" alt="view github pages">
 </a>
+
 # predix-machine-starter-bundle
 
 This repository contains a sample bundle that shows how to create a consumer component and host a rest service.
