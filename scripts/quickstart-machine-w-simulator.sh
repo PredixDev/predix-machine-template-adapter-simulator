@@ -40,7 +40,6 @@ SKIP_SETUP=false
 #ASSET_MODEL="-amrmd predix-ui-seed/server/sample-data/predix-asset/asset-model-metadata.json predix-ui-seed/server/sample-data/predix-asset/asset-model.json"
 SCRIPT="-script build-basic-app.sh -script-readargs build-basic-app-readargs.sh"
 QUICKSTART_ARGS="-ba -uaa -asset -ts -wd -nsts -mc $SCRIPT"
-IZON_SH="https://github.build.ge.com/raw/adoption/izon/1.0.0/izon.sh"
 VERSION_JSON="version.json"
 PREDIX_SCRIPTS=predix-scripts
 REPO_NAME="predix-machine-template-adapter-simulator"
@@ -50,6 +49,7 @@ TOOLS="Cloud Foundry CLI, Git, Maven, Node.js"
 TOOLS_SWITCHES="--cf --git --maven --nodejs"
 
 local_read_args $@
+IZON_SH="https://github.build.ge.com/raw/adoption/izon/$BRANCH/izon.sh"
 VERSION_JSON_URL=https://github.build.ge.com/raw/adoption/$REPO_NAME/$BRANCH/version.json
 
 
@@ -82,17 +82,9 @@ function init() {
   fi
   #get the script that reads version.json
   eval "$(curl -s -L $IZON_SH)"
-  #get the predix-scripts url and branch from the version.json
-  __readDependency $PREDIX_SCRIPTS PREDIX_SCRIPTS_URL PREDIX_SCRIPTS_BRANCH
-  LOCAL_SETUP_FUNCS_URL=https://github.build.ge.com/raw/adoption/$PREDIX_SCRIPTS/$PREDIX_SCRIPTS_BRANCH/bash/scripts/local-setup-funcs.sh
 
-  if [ -f "local-setup-funcs.sh" ]; then
-    rm local-setup-funcs.sh
-  fi
-  if [ ! -f "local-setup-funcs.sh" ]; then
-    curl -s -O $LOCAL_SETUP_FUNCS_URL
-  fi
-  source local-setup-funcs.sh
+  getVersionFile
+  getLocalSetupFuncs
 
 }
 
@@ -108,26 +100,9 @@ else
   fi
 fi
 
+getPredixScripts
 #clone the repo itself if running from oneclick script
-if [ ! -d "../$REPO_NAME" ]; then
-  if [ -d "$REPO_NAME" ]; then
-    #remove it if 2nd time
-    rm -rf $REPO_NAME
-  fi
-  __readDependency $REPO_NAME REPO_URL REPO_BRANCH
-  git clone --depth 1 --branch $REPO_BRANCH $REPO_URL
-  cd $REPO_NAME
-fi
-if [ ! -d "$PREDIX_SCRIPTS" ]; then
-  echo "Cloning predix script repo ..."
-  git clone --depth 1 --branch $PREDIX_SCRIPTS_BRANCH $PREDIX_SCRIPTS_URL
-else
-  echo "Predix scripts repo found reusing it..."
-  cd predix-scripts
-  git pull
-  cd ..
-fi
-
+getCurrentRepo
 
 echo "quickstart_args=$QUICKSTART_ARGS"
 source $PREDIX_SCRIPTS/bash/quickstart.sh $QUICKSTART_ARGS
@@ -135,14 +110,16 @@ source $PREDIX_SCRIPTS/bash/quickstart.sh $QUICKSTART_ARGS
 
 
 #post quickstart customizations
-cd $rootDir/..
-logDir="$rootDir/log"
-SUMMARY_TEXTFILE="$logDir/quickstart-summary.txt"
+cd $REPO_NAME
+#logDir="$rootDir/log"
+#SUMMARY_TEXTFILE="$logDir/quickstart-summary.txt"
 
 echo "MACHINE_VERSION : $MACHINE_VERSION"
 echo "PREDIX_MACHINE_HOME : $PREDIX_MACHINE_HOME"
 
 __print_center "Build and setup the Predix Machine Adapter" "#"
+echo "here "
+pwd
 
 __echo_run cp "config/com.ge.predix.solsvc.simulator.config.config" "$PREDIX_MACHINE_HOME/configuration/machine"
 __echo_run cp "config/com.ge.predix.workshop.nodeconfig.json" "$PREDIX_MACHINE_HOME/configuration/machine"
@@ -154,7 +131,7 @@ fi
 #Replace the :TAE tag with instance prepender
 configFile="$PREDIX_MACHINE_HOME/configuration/machine/com.ge.predix.workshop.nodeconfig.json"
 __find_and_replace ":TAE" ":$(echo $INSTANCE_PREPENDER | tr 'a-z' 'A-Z')" "$configFile" "$quickstartLogDir"
-./predix-scripts/bash/scripts/buildMavenBundle.sh "$PREDIX_MACHINE_HOME"
+../bash/scripts/buildMavenBundle.sh "$PREDIX_MACHINE_HOME"
 
 echo "" >> "$SUMMARY_TEXTFILE"
 echo "Edge Device Specific Configuration" >> "$SUMMARY_TEXTFILE"
