@@ -43,13 +43,14 @@ QUICKSTART_ARGS="-ba -uaa -asset -ts -wd -nsts -mc $SCRIPT"
 IZON_SH="https://github.build.ge.com/raw/adoption/izon/1.0.0/izon.sh"
 VERSION_JSON="version.json"
 PREDIX_SCRIPTS=predix-scripts
+REPO_NAME="predix-machine-template-adapter-simulator"
 VERSION_JSON="version.json"
 APP_NAME="Edge Starter: Predix Machine on laptop with simulator"
 TOOLS="Cloud Foundry CLI, Git, Maven, Node.js"
 TOOLS_SWITCHES="--cf --git --maven --nodejs"
 
 local_read_args $@
-VERSION_JSON_URL=https://github.build.ge.com/raw/adoption/predix-machine-template-adapter-simulator/$BRANCH/version.json
+VERSION_JSON_URL=https://github.build.ge.com/raw/adoption/$REPO_NAME/$BRANCH/version.json
 
 
 function check_internet() {
@@ -81,20 +82,18 @@ function init() {
   fi
   #get the script that reads version.json
   eval "$(curl -s -L $IZON_SH)"
-  #get the url and branch of the requested repo from the version.json
-  __readDependency "local-setup" LOCAL_SETUP_URL LOCAL_SETUP_BRANCH
   #get the predix-scripts url and branch from the version.json
   __readDependency $PREDIX_SCRIPTS PREDIX_SCRIPTS_URL PREDIX_SCRIPTS_BRANCH
-  if [ ! -d "$PREDIX_SCRIPTS" ]; then
-    echo "Cloning predix script repo ..."
-    git clone --depth 1 --branch $PREDIX_SCRIPTS_BRANCH $PREDIX_SCRIPTS_URL
-  else
-  	echo "Predix scripts repo found reusing it..."
-  	cd predix-scripts
-    git pull
-    cd ..
+  LOCAL_SETUP_FUNCS_URL=https://github.build.ge.com/raw/adoption/$PREDIX_SCRIPTS/$PREDIX_SCRIPTS_BRANCH/bash/scripts/local-setup-funcs.sh
+
+  if [ -f "local-setup-funcs.sh" ]; then
+    rm local-setup-funcs.sh
   fi
-  source $PREDIX_SCRIPTS/bash/scripts/local-setup-funcs.sh
+  if [ ! -f "local-setup-funcs.sh" ]; then
+    curl -s -O $LOCAL_SETUP_FUNCS_URL
+  fi
+  source local-setup-funcs.sh
+
 }
 
 if [[ $PRINT_USAGE == 1 ]]; then
@@ -108,6 +107,27 @@ else
     __standard_mac_initialization
   fi
 fi
+
+#clone the repo itself if running from oneclick script
+if [ ! -d "../$REPO_NAME" ]; then
+  if [ -d "$REPO_NAME" ]; then
+    #remove it if 2nd time
+    rm -rf $REPO_NAME
+  fi
+  __readDependency $REPO_NAME REPO_URL REPO_BRANCH
+  git clone --depth 1 --branch $REPO_BRANCH $REPO_URL
+  cd $REPO_NAME
+fi
+if [ ! -d "$PREDIX_SCRIPTS" ]; then
+  echo "Cloning predix script repo ..."
+  git clone --depth 1 --branch $PREDIX_SCRIPTS_BRANCH $PREDIX_SCRIPTS_URL
+else
+  echo "Predix scripts repo found reusing it..."
+  cd predix-scripts
+  git pull
+  cd ..
+fi
+
 
 echo "quickstart_args=$QUICKSTART_ARGS"
 source $PREDIX_SCRIPTS/bash/quickstart.sh $QUICKSTART_ARGS
