@@ -1,10 +1,10 @@
 {
   "name": "Predix Machine Subscription Machine Adapter - Simulator",
-  "version": "2.1.18",
+  "version": "2.1.21",
   "private": true,
   "dependencies": {
     "local-setup": "https://github.com/PredixDev/local-setup#1.0.11",
-    "Predix-HelloWorld-WebApp": "https://github.com/PredixDev/Predix-HelloWorld-WebApp.git#1.1.4",
+    "Predix-HelloWorld-WebApp": "https://github.com/PredixDev/Predix-HelloWorld-WebApp.git#1.1.5",
     "predix-machine-container-url": "https://github.build.ge.com/raw/adoption/predix-machine-templates/develop/PredixMachineDebug-16.4.2.zip#",
     "predix-machine-template-adapter-simulator": "https://github.com/PredixDev/predix-machine-template-adapter-simulator.git#2.3.0",
     "predix-machine-templates": "https://github.com/PredixDev/predix-machine-templates.git#1.1.9",
