@@ -104,6 +104,7 @@ getPredixScripts
 #clone the repo itself if running from oneclick script
 getCurrentRepo
 
+SKIP_ALL_DONE=1
 echo "quickstart_args=$QUICKSTART_ARGS"
 source $PREDIX_SCRIPTS/bash/quickstart.sh $QUICKSTART_ARGS
 
@@ -118,8 +119,6 @@ echo "MACHINE_VERSION : $MACHINE_VERSION"
 echo "PREDIX_MACHINE_HOME : $PREDIX_MACHINE_HOME"
 
 __print_center "Build and setup the Predix Machine Adapter" "#"
-echo "here "
-pwd
 
 __echo_run cp "config/com.ge.predix.solsvc.simulator.config.config" "$PREDIX_MACHINE_HOME/configuration/machine"
 __echo_run cp "config/com.ge.predix.workshop.nodeconfig.json" "$PREDIX_MACHINE_HOME/configuration/machine"
@@ -145,6 +144,11 @@ echo "Or you can now start Machine at location 1 as follows" >> "$SUMMARY_TEXTFI
 echo "cd $PREDIX_MACHINE_HOME/machine/bin/predix" >> "$SUMMARY_TEXTFILE"
 echo "./start_container.sh clean" >> "$SUMMARY_TEXTFILE"
 echo "" >> "$SUMMARY_TEXTFILE"
+echo "" >> "$SUMMARY_TEXTFILE"
+echo "NOTE: If you are behind a corporate proxy server be sure to update $PREDIX_MACHINE_HOME/configuration/machine/org.apache.http.proxyconfigurator-0.config" >> "$SUMMARY_TEXTFILE"
+echo "" >> "$SUMMARY_TEXTFILE"
+
 
 allDone
 __append_new_line_log "Successfully completed $APP_NAME installation!" "$quickstartLogDir"
+__append_new_line_log "" "$quickstartLogDir"
