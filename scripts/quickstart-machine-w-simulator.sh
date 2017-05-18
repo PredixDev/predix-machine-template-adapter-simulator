@@ -45,8 +45,8 @@ PREDIX_SCRIPTS=predix-scripts
 REPO_NAME="predix-machine-template-adapter-simulator"
 VERSION_JSON="version.json"
 APP_NAME="Edge Starter: Predix Machine on laptop with simulator"
-TOOLS="Cloud Foundry CLI, Git, Maven, Node.js"
-TOOLS_SWITCHES="--cf --git --maven --nodejs"
+TOOLS="Cloud Foundry CLI, Git, Maven, Node.js, Predix CLI"
+TOOLS_SWITCHES="--cf --git --maven --nodejs --predixcli"
 
 local_read_args $@
 IZON_SH="https://github.build.ge.com/raw/adoption/izon/$BRANCH/izon.sh"
