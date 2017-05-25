@@ -1,7 +1,7 @@
-<a href="http://predixdev.github.io/predix-machine-template-adapter-simulator/javadocs/index.html" target="_blank" >
+<a href="../../../../pages/adoption/predix-machine-template-adapter-simulator/javadocs/index.html" target="_blank" >
 	<img height="50px" width="100px" src="images/javadoc.png" alt="view javadoc"></a>
 &nbsp;
-<a href="http://predixdev.github.io/predix-machine-template-adapter-simulator" target="_blank">
+<a href="../../../../pages/adoption/predix-machine-template-adapter-simulator" target="_blank">
 	<img height="50px" width="100px" src="images/pages.jpg" alt="view github pages">
 </a>
 

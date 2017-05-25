@@ -41,7 +41,7 @@ SET APP_NAME=Personal Edge Starter with Data Simulator
 SET TOOLS=Cloud Foundry CLI, Git, Node.js, Maven, Predix CLI
 SET TOOLS_SWITCHES=/cf /git /maven /nodejs /predixcli
 
-SET SHELL_SCRIPT_URL=https://github.build.ge.com/raw/adoption/!REPO_NAME!/!BRANCH!/scripts/!SHELL_SCRIPT_NAME!
+SET SHELL_SCRIPT_URL=https://raw.githubusercontent.com/PredixDev/!REPO_NAME!/!BRANCH!/scripts/!SHELL_SCRIPT_NAME!
 
 GOTO START
 
@@ -128,7 +128,7 @@ GOTO :eof
   xcopy /y !CURRENTDIR!\version.json %TEMP%
   CALL %TEMP%\izon.bat READ_DEPENDENCY local-setup LOCAL_SETUP_URL LOCAL_SETUP_BRANCH %TEMP%
   ECHO "LOCAL_SETUP_BRANCH=!LOCAL_SETUP_BRANCH!"
-  SET SETUP_WINDOWS=https://github.build.ge.com/raw/adoption/local-setup/!LOCAL_SETUP_BRANCH!/setup-windows.bat
+  SET SETUP_WINDOWS=https://raw.githubusercontent.com/PredixDev/local-setup/!LOCAL_SETUP_BRANCH!/setup-windows.bat
   rem SET SETUP_WINDOWS=https://raw.githubusercontent.com/PredixDev/local-setup/!LOCAL_SETUP_BRANCH!/setup-windows.bat
 
   ECHO !SETUP_WINDOWS!
