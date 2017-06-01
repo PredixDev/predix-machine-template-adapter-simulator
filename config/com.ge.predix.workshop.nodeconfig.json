@@ -1,8 +1,8 @@
 [
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:CompressionRatio",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:CompressionRatio",
     "dataType": "DOUBLE",
     "upperThreshold": 3.0,
     "lowerThreshold": 2.5,
@@ -10,8 +10,8 @@
   },
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:DischargePressure",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:DischargePressure",
     "dataType": "DOUBLE",
     "upperThreshold": 23.0,
     "lowerThreshold": 0.0,
@@ -19,8 +19,8 @@
   },
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:SuctionPressure",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:SuctionPressure",
     "dataType": "DOUBLE",
     "upperThreshold": 0.5,
     "lowerThreshold": 0.0,
@@ -28,8 +28,8 @@
   },
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:MaximumPressure",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:MaximumPressure",
     "dataType": "DOUBLE",
     "upperThreshold": 20.0,
     "lowerThreshold": 28.0,
@@ -37,8 +37,8 @@
   },
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:MinimumPressure",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:MinimumPressure",
     "dataType": "DOUBLE",
     "upperThreshold": 0.0,
     "lowerThreshold": 0.0,
@@ -46,8 +46,8 @@
   },
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:Temperature",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:Temperature",
     "dataType": "DOUBLE",
     "upperThreshold": 80,
     "lowerThreshold": 50,
@@ -55,8 +55,8 @@
   },
   {
     "simulateAlarm": false,
-    "assetId": "Compressor-2015",
-    "nodeName": "Compressor-2015:Velocity",
+    "assetId": "Compressor-2017",
+    "nodeName": "Compressor-2017:Velocity",
     "dataType": "DOUBLE",
     "upperThreshold": 0.1,
     "lowerThreshold": 0.0,
