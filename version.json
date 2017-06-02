@@ -1,6 +1,6 @@
 {
   "name": "Predix Machine Adapter - Simulator",
-  "version": "2.2.0",
+  "version": "2.2.3",
   "private": true,
   "dependencies": {
     "local-setup": "https://github.com/PredixDev/local-setup#1.0.11",
