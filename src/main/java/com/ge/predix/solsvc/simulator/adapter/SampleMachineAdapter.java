@@ -84,7 +84,7 @@ import parsii.tokenizer.ParseException;
 public class SampleMachineAdapter
 implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 {
-	
+
 
 	/** Service PID for Sample Machine Adapter */
 	public static final String SERVICE_PID = "com.ge.predix.solsvc.simulator.adapter"; //$NON-NLS-1$
@@ -131,7 +131,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	@Activate
 	public void activate(ComponentContext ctx) throws IOException {
 		_logger.info("Starting sample " + ctx.getBundleContext().getBundle().getSymbolicName()); //$NON-NLS-1$
-		
+
 		ObjectMapper mapper = new ObjectMapper();
 		File configFile = new File(MACHINE_HOME + File.separator + this.config.getNodeConfigFile());
 		this.configNodes = mapper.readValue(configFile, new TypeReference<List<JsonDataNode>>() {
@@ -256,9 +256,11 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		// DecimalFormat df = new DecimalFormat("####.##"); //$NON-NLS-1$
 		SampleDataNode node = this.dataNodes.get(nodeId);
 		double fvalue = generateRandomUsageValue(node.getNode());
+		//_logger.info("fvalue=" + fvalue );
 		// if (node.getNode().getExpression() != null && !"".equals(node.getNode().getExpression())) { //$NON-NLS-1$
 		// 	String expr = node.getNode().getExpression();
 		// 	fvalue = eval(expr.replaceAll("#NODE_VALUE#", Double.toString(fvalue))); //$NON-NLS-1$
+		// 	_logger.info("fvalue2=" + fvalue );
 		// }
 		PEnvelope envelope = new PEnvelope(fvalue);
 		pDataValue = new PDataValue(node.getNodeId(), envelope);
