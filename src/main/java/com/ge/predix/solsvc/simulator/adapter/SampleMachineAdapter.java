@@ -256,10 +256,10 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		// DecimalFormat df = new DecimalFormat("####.##"); //$NON-NLS-1$
 		SampleDataNode node = this.dataNodes.get(nodeId);
 		double fvalue = generateRandomUsageValue(node.getNode());
-		if (node.getNode().getExpression() != null && !"".equals(node.getNode().getExpression())) { //$NON-NLS-1$
-			String expr = node.getNode().getExpression();
-			fvalue = eval(expr.replaceAll("#NODE_VALUE#", Double.toString(fvalue))); //$NON-NLS-1$
-		}
+		// if (node.getNode().getExpression() != null && !"".equals(node.getNode().getExpression())) { //$NON-NLS-1$
+		// 	String expr = node.getNode().getExpression();
+		// 	fvalue = eval(expr.replaceAll("#NODE_VALUE#", Double.toString(fvalue))); //$NON-NLS-1$
+		// }
 		PEnvelope envelope = new PEnvelope(fvalue);
 		pDataValue = new PDataValue(node.getNodeId(), envelope);
 		pDataValue.setNodeName(node.getName());
