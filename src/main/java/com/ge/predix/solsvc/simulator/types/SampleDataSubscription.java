@@ -171,4 +171,9 @@ public class SampleDataSubscription implements Runnable, IDataSubscription {
 	public void setSpillway(ISpillway spillway) {
 		this.spillway = spillway;
 	}
+
+	@Override
+	public long getUpdateIntervalMillis() {
+		return this.updateInterval;
+	}
 }

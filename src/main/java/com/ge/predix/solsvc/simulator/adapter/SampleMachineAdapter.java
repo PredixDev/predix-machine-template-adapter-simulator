@@ -73,9 +73,9 @@ import parsii.tokenizer.ParseException;
 
 /**
  *
- * @author Predix Machine Sample
+ * @author Predix Machine Subscription Adapter to generate sample data as configured in com.ge.predix.workshop.nodeconfig.json 
  */
-@SuppressWarnings({ "javadoc", "deprecation" })
+@SuppressWarnings("deprecation")
 @Component(name = SampleMachineAdapter.SERVICE_PID, service =
 {
 		ISubscriptionMachineAdapter.class, IMachineAdapter.class
@@ -155,6 +155,9 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 		}
 	}
 
+	/*
+	 * parse the Data Subscriptions
+	 */
 	private String[] parseDataSubscriptions() {
 
 		Object objectValue = this.config.getDataSubscriptions();
@@ -175,10 +178,14 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 				return stringValue.split(SPLIT_PATTERN);
 			}
 		}
+		//Throw MachineAdapter Exception if the subscriptions is invalid
 		invalidDataSubscription();
 		return new String[0];
 	}
 
+	/*
+	 * Throw MachineAdapter Exception if the subscriptions is invalid
+	 */
 	private void invalidDataSubscription() {
 		// data subscriptions must not be empty.
 		String msg = "SampleSubscriptionAdapter.dataSubscriptions.invalid"; //$NON-NLS-1$
