@@ -66,6 +66,7 @@ import com.ge.predix.solsvc.simulator.types.DataSimulatorResponse;
 import com.ge.predix.solsvc.simulator.types.SampleDataNode;
 import com.ge.predix.solsvc.simulator.types.SampleDataSubscription;
 import com.ge.predix.solsvc.simulator.types.SampleSubscriptionListener;
+import com.ge.predixmachine.datamodel.datacomm.EdgeData;
 
 import parsii.eval.Expression;
 import parsii.eval.Parser;
@@ -594,5 +595,17 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	@Reference
 	public void setSpillway(ISpillway spillway) {
 		this.spillway = spillway;
+	}
+
+	@Override
+	public EdgeData readEdgeData(UUID arg0) throws MachineAdapterException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void writeEdgeData(UUID arg0, EdgeData arg1) throws MachineAdapterException {
+		// TODO Auto-generated method stub
+		
 	}
 }
