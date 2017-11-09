@@ -1,12 +1,12 @@
 {
   "name": "Predix Machine Adapter - Simulator",
-  "version": "2.2.67",
+  "version": "2.2.69",
   "private": true,
   "dependencies": {
     "local-setup": "https://github.com/PredixDev/local-setup#1.0.17",
     "Predix-HelloWorld-WebApp": "https://github.com/PredixDev/Predix-HelloWorld-WebApp#1.1.67",
     "predix-machine-container-url": "https://raw.githubusercontent.com/PredixDev/predix-machine-templates/master/PredixMachineDebug-16.4.2.zip#",
-    "predix-machine-template-adapter-simulator": "https://github.com/PredixDev/predix-machine-template-adapter-simulator#2.3.38",
+    "predix-machine-template-adapter-simulator": "https://github.com/PredixDev/predix-machine-template-adapter-simulator#2.3.40",
     "predix-machine-templates": "https://github.com/PredixDev/predix-machine-templates#1.1.29",
     "predix-machine-template-processor": "https://github.com/PredixDev/predix-machine-template-processor#2.2.1",
     "predix-nodejs-starter": "https://github.com/PredixDev/predix-nodejs-starter#1.1.114",
