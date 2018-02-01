@@ -76,7 +76,6 @@ import parsii.tokenizer.ParseException;
  *
  * @author Predix Machine Subscription Adapter to generate sample data as configured in com.ge.predix.workshop.nodeconfig.json 
  */
-@SuppressWarnings("deprecation")
 @Component(name = SampleMachineAdapter.SERVICE_PID, service =
 {
 		ISubscriptionMachineAdapter.class, IMachineAdapter.class
@@ -101,6 +100,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	private UUID uuid = UUID.randomUUID();
 	private MachineAdapterInfo adapterInfo;
 	private MachineAdapterState adapterState;
+	
 	private Map<UUID, SampleDataNode> dataNodes = new HashMap<UUID, SampleDataNode>();
 
 	private ISampleAdapterConfig config;
@@ -463,8 +463,7 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	}
 
 	/**
-	 * @param dataNodes
-	 *            -
+	 * @param newNodes -
 	 * @return -
 	 */
 	@PUT
