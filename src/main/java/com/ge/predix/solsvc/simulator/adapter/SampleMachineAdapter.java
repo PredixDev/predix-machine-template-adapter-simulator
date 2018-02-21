@@ -595,16 +595,4 @@ implements ISubscriptionMachineAdapter,IHttpClientSampleRestServer
 	public void setSpillway(ISpillway spillway) {
 		this.spillway = spillway;
 	}
-
-	@Override
-	public EdgeData readEdgeData(UUID arg0) throws MachineAdapterException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void writeEdgeData(UUID arg0, EdgeData arg1) throws MachineAdapterException {
-		// TODO Auto-generated method stub
-		
-	}
 }
