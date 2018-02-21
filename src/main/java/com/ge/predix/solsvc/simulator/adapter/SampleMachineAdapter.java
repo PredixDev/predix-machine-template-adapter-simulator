@@ -38,11 +38,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,8 +61,12 @@ import com.ge.predix.solsvc.simulator.types.DataSimulatorResponse;
 import com.ge.predix.solsvc.simulator.types.SampleDataNode;
 import com.ge.predix.solsvc.simulator.types.SampleDataSubscription;
 import com.ge.predix.solsvc.simulator.types.SampleSubscriptionListener;
-import com.ge.predixmachine.datamodel.datacomm.EdgeData;
 
+import aQute.bnd.annotation.component.Activate;
+import aQute.bnd.annotation.component.Component;
+import aQute.bnd.annotation.component.Deactivate;
+import aQute.bnd.annotation.component.Modified;
+import aQute.bnd.annotation.component.Reference;
 import parsii.eval.Expression;
 import parsii.eval.Parser;
 import parsii.tokenizer.ParseException;
@@ -76,7 +75,7 @@ import parsii.tokenizer.ParseException;
  *
  * @author Predix Machine Subscription Adapter to generate sample data as configured in com.ge.predix.workshop.nodeconfig.json 
  */
-@Component(name = SampleMachineAdapter.SERVICE_PID, service =
+@Component(name = SampleMachineAdapter.SERVICE_PID, provide =
 {
 		ISubscriptionMachineAdapter.class, IMachineAdapter.class
 })
