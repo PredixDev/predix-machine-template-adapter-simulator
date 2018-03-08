@@ -1,0 +1,95 @@
+#!/usr/bin/env groovy
+@Library('devrel') _
+def branchName = env.BRANCH_NAME
+def complianceEnabled = true;
+def pullRequest = env.CHANGE_ID
+def pullTarget = env.CHANGE_TARGET
+def repoName = "predix-machine-template-adapter-simulator"
+def jobName = "app-edge-predix-machine-adapter-simulator"
+def quickstartScript = "quickstart-machine-w-simulator.sh"
+
+pipeline { 
+  agent {
+    docker {
+      image 'predixadoption/devrelprediximage:latest'
+      label 'dind'
+    }
+  }
+  environment {
+    COMPLIANCEENABLED = true
+    CF_AWS_CREDS = credentials('cf_aws_creds')
+    DEVCLOUD_ARTIFACTORY_CREDS = credentials('devcloud_artifactory_creds')
+    EXT_GITHUB_CREDS = credentials('external_git_creds')
+    CF_URL="https://api.system.aws-usw02-pr.ice.predix.io"
+    CF_ORG="Predix_Builders_Hack"
+    CF_SPACE="integration"
+    MAVEN_SETTINGS_FILE="mvn_settings_external.xml"
+  }
+  parameters {
+    string(name: 'PREFIX', defaultValue: 'smoketest-machine-simulator', description: 'Prefix for QuickStart script')
+    string(name: 'POPS', defaultValue: 'uswest', description: 'one or more of these: uswest,useast,frankfurt,japan')
+  }
+  stages {
+    stage("Checkout" ) {
+      steps {
+        echo "The workspace is ${env.WORKSPACE}"	    
+        script {
+          echo 'Stage Checkout'
+          sh """#!/bin/bash -e
+          set -x
+          pwd
+          git status
+          ls -al
+          ls -al /root
+          printenv
+          cat .git/config
+          """
+          internalrelease.setGitRemoteForUpdate(repoName)          
+          internalrelease.checkoutPropelSharedLibrary()
+        }
+      }
+      post {
+        success {
+          echo "Checkout stage completed"
+        }
+        failure {
+          echo "Checkout stage failed"
+        }
+      }
+    }
+    stage('SmokeTest') {
+      parallel {
+        stage('SmokeTest - DoWork') {
+          steps {
+            script {
+              if ( "${env.BRANCH_NAME}" != "master" ) {
+                echo "exiting, branchName should be master"
+                error("SmokeTest phase should be run from master branch")
+              }
+              echo 'Stage SmokeTest - if needed, integration tests in production (e.g. push microservice, run quickstart)'
+              cloudFoundry.loginToUSW()
+              externalrelease.smokeTest(repoName)
+              externalrelease.smokeTestWithQuickstart(repoName, quickstartScript,"","${env.PREFIX}","master","mvn_settings_external.xml","${env.WORKSPACE}/test")
+            }
+          }
+        }
+      }
+      post {
+        success {
+          echo "SmokeTest stage completed successfuly"
+        }
+        failure {
+          echo "SmokeTest stage failed"
+        }
+      }
+    }
+  }
+  post {
+    always {
+      script {
+        internalrelease.cleanupAfterJob()
+        notifications.sendFlowdockMsg()
+      }
+    }
+  }
+}
