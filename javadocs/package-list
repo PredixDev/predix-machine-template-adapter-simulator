@@ -1,0 +1,5 @@
+com.ge.predix.solsvc.simulator.adapter
+com.ge.predix.solsvc.simulator.api
+com.ge.predix.solsvc.simulator.config
+com.ge.predix.solsvc.simulator.rest
+com.ge.predix.solsvc.simulator.types
