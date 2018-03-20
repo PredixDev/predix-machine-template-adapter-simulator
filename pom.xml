@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ge.predix.solsvc</groupId>
 	<artifactId>predix-machine-template-adapter-simulator</artifactId>
-	<version>2.3.69</version>
+	<version>2.3.71</version>
 	<packaging>bundle</packaging>
 
 	<properties>
@@ -352,6 +352,13 @@
 					</artifactItems>
 				</configuration>
 			</plugin>
+			<plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-plugin-plugin</artifactId>
+          <configuration>
+            <helpPackageName>org.apache.maven.plugins.help</helpPackageName>
+          </configuration>
+        </plugin>
 		</plugins>
 	</build>
 
