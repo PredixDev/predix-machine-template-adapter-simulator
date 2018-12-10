@@ -34,24 +34,32 @@ function local_read_args() {
   fi
 }
 
+# default settings
 BRANCH="master"
 PRINT_USAGE=0
 SKIP_SETUP=false
+
+IZON_SH="https://raw.githubusercontent.com/PredixDev/izon/1.1.0/izon2.sh"
 #ASSET_MODEL="-amrmd predix-ui-seed/server/sample-data/predix-asset/asset-model-metadata.json predix-ui-seed/server/sample-data/predix-asset/asset-model.json"
 SCRIPT="-script build-basic-app.sh -script-readargs build-basic-app-readargs.sh"
-QUICKSTART_ARGS="-pxclimin 0.6.3 -ba -uaa -asset -ts -wd -nsts -mc $SCRIPT"
+QUICKSTART_ARGS="-uaa -asset -ts -wd -nsts -mc $SCRIPT"
 VERSION_JSON="version.json"
 PREDIX_SCRIPTS=predix-scripts
 REPO_NAME="predix-machine-template-adapter-simulator"
 VERSION_JSON="version.json"
 APP_DIR="edge-simulator"
 APP_NAME="Edge Starter: Predix Machine on laptop with simulator"
+SCRIPT_NAME="quickstart-machine-w-simulator.sh"
+GITHUB_RAW="https://raw.githubusercontent.com/PredixDev"
 TOOLS="Cloud Foundry CLI, Git, Maven, Node.js, Predix CLI"
 TOOLS_SWITCHES="--cf --git --maven --nodejs --predixcli"
 
+# Process switches
 local_read_args $@
-IZON_SH="https://raw.githubusercontent.com/PredixDev/izon/$BRANCH/izon.sh"
-VERSION_JSON_URL=https://raw.githubusercontent.com/PredixDev/$REPO_NAME/$BRANCH/version.json
+
+#variables after processing switches
+SCRIPT_LOC="$GITHUB_RAW/$REPO_NAME/$BRANCH/scripts/$SCRIPT_NAME"
+VERSION_JSON_URL="$GITHUB_RAW/$REPO_NAME/$BRANCH/version.json"
 
 
 function check_internet() {
@@ -75,10 +83,6 @@ function init() {
     echo 'Please launch the script from the root dir of the project'
     exit 1
   fi
-  if [[ ! $currentDir == *"$REPO_NAME" ]]; then
-    mkdir -p $APP_DIR
-    cd $APP_DIR
-  fi
 
   check_internet
   #if needed, get the version.json that resolves dependent repos from another github repo
@@ -87,10 +91,15 @@ function init() {
   fi
   #get the script that reads version.json
   eval "$(curl -s -L $IZON_SH)"
+  
+  chmod 755 $SCRIPT_NAME;
+  if [[ ! $currentDir == *"$REPO_NAME" ]]; then
+    mkdir -p $APP_DIR
+    cd $APP_DIR
+  fi
 
   getVersionFile
-  getLocalSetupFuncs
-
+  getLocalSetupFuncs $GITHUB_RAW
 }
 
 if [[ $PRINT_USAGE == 1 ]]; then

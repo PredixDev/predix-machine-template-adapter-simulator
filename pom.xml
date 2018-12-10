@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ge.predix.solsvc</groupId>
 	<artifactId>predix-machine-template-adapter-simulator</artifactId>
-	<version>2.3.71</version>
+	<version>2.3.72</version>
 	<packaging>bundle</packaging>
-
 	<properties>
-			<maven.compiler.source>1.8</maven.compiler.source>
+		<com.scireum.parsii.version>2.3</com.scireum.parsii.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <!-- Project Properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,7 +32,7 @@
         <org.slf4j.version>1.7.21</org.slf4j.version>
         
         <!-- This actually drives the BND used during compile time. The version of this plugin will map to a version of BND -->
-        <org.apache.felix.maven-bundle-plugin.version>3.0.1</org.apache.felix.maven-bundle-plugin.version>
+        <org.apache.felix.maven-bundle-plugin.version>3.5.0</org.apache.felix.maven-bundle-plugin.version>
 
 		<!-- 3rd Party Compile-Dependency Bundle versions -->
         <org.osgi.core.version>5.0.0</org.osgi.core.version>
@@ -43,8 +43,6 @@
         <com.prosyst.mbs.osgi.metatype.bundle.version>8.1.4.1</com.prosyst.mbs.osgi.metatype.bundle.version>
         <com.prosyst.mbs.web.console.auth.pass.version>8.1.4.1</com.prosyst.mbs.web.console.auth.pass.version>
         <com.prosyst.mbs.webservices.jsonrpc.core.version>8.1.4.1</com.prosyst.mbs.webservices.jsonrpc.core.version>
-
-        <biz.aQute.bndlib.version>3.2.0</biz.aQute.bndlib.version>
 
         <javax.ws.rs.version>2.0.1</javax.ws.rs.version>
         <org.apache.commons.io.version>2.5</org.apache.commons.io.version>
@@ -60,7 +58,8 @@
         <org.apache.httpcomponents.httpcore.version>4.4.4</org.apache.httpcomponents.httpcore.version>
         <!-- org.apache.httpcomponents.httpclient.version is for httpclient-osgi -->
         <org.apache.httpcomponents.httpclient.version>4.5.2</org.apache.httpcomponents.httpclient.version>
-
+		<biz.aQute.bndlib.version>3.2.0</biz.aQute.bndlib.version>
+		
         <!-- Jackson  -->
         <jackson.core-asl.version>1.9.13</jackson.core-asl.version>
         <jackson.jaxrs.version>1.9.13</jackson.jaxrs.version>
@@ -115,8 +114,6 @@
         <import.org.osgi.service.util>"[1.0,2)"</import.org.osgi.service.util>
         <import.org.osgi.service.useradmin>"[1.1,2)"</import.org.osgi.service.useradmin>
         <import.org.osgi.util.tracker>"[1.5,2)"</import.org.osgi.util.tracker>
-
-        <import.aQute.bnd.annotation.metatype>"[1.45,2)"</import.aQute.bnd.annotation.metatype>
 
         <import.org.slf4j>"[1.7,2)"</import.org.slf4j>
 
@@ -203,7 +200,14 @@
         <import.com.ge.predixmachine.datamodel.event>"[1.0,2.0)"</import.com.ge.predixmachine.datamodel.event>
    	</properties>
 	<dependencies>
-
+		<!-- DS Annotation Dependency -->
+        <dependency>
+            <groupId>biz.aQute.bnd</groupId>
+            <artifactId>biz.aQute.bndlib</artifactId>
+            <version>${biz.aQute.bndlib.version}</version>
+            <scope>compile</scope>
+        </dependency>
+	
 		<!-- OSGi -->
 		<dependency>
 			<groupId>org.osgi</groupId>
@@ -266,14 +270,6 @@
             <artifactId>protobuf-java-util</artifactId>
             <version>${com.google.protobuf.version}</version>
         </dependency>
-		<!-- DS Annotation Dependency -->
-        <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>${biz.aQute.bndlib.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        
         
 		<!-- Jackson apis -->
 		<dependency>
@@ -304,18 +300,19 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${org.apache.felix.maven-bundle-plugin.version}</version>
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
 						<_noee>true</_noee>
-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}</Bundle-Version>
 						<Bundle-Classpath>parsii-${com.scireum.parsii.version}.jar</Bundle-Classpath>
 						<Embed-Dependency>parsii</Embed-Dependency>
-             <Service-Component>*</Service-Component>
+             			<Service-Component>*</Service-Component>
 						<Import-Package>
 							aQute.bnd.annotation.metatype;version=${import.aQute.bnd.annotation.metatype},
-                            javax.ws.rs.*;version=${import.javax.ws.rs},
+							javax.ws.rs.*;version=${import.javax.ws.rs},
 							org.slf4j;version=${import.org.slf4j};provider=paxlogging,
 							org.osgi.service.component;version=${import.org.osgi.service.component},
 							org.osgi.framework;version=${import.org.osgi.framework},
@@ -337,28 +334,24 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin.version}</version>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>${project.groupId}</groupId>
-							<artifactId>${project.artifactId}</artifactId>
-							<version>${project.version}</version>
-							<overWrite>true</overWrite>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-						</artifactItem>
-					</artifactItems>
-				</configuration>
-			</plugin>
-			<plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <configuration>
-            <helpPackageName>org.apache.maven.plugins.help</helpPackageName>
-          </configuration>
-        </plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.plugins.maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${maven.compiler.source.version}</source>
+                    <target>${maven.compiler.target.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven.plugins.maven-assembly-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>${maven.plugins.maven-jarsigner-plugin.version}</version>
+            </plugin>
 		</plugins>
 	</build>
 
